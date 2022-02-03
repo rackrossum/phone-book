@@ -7,6 +7,7 @@
 #include <string_view>
 #include <vector>
 #include <iosfwd>
+#include <set>
 
 struct Date {
   int year, month, day;
@@ -25,6 +26,19 @@ public:
   IteratorRange<???> FindByNamePrefix(std::string_view name_prefix) const;
 
   void SaveTo(std::ostream& output) const;
+
+private:
+    struct ContactByName
+    {
+        std::string name;
+        std::vector<Contact>::const_iterator it;
+    };
+
+    friend bool operator < (const ContactByName& lhs, const ContactByName& rhs);
+
+private:
+    std::vector<Contact> m_contacts;
+    std::set<ContactByName> m_sortedContacts;
 };
 
 PhoneBook DeserializePhoneBook(std::istream& input);
