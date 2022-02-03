@@ -19,6 +19,14 @@ struct Contact {
   std::vector<std::string> phones;
 };
 
+struct ContactByName
+{
+    std::string name;
+    std::vector<Contact>::const_iterator it;
+};
+
+bool operator < (const ContactByName& lhs, const ContactByName& rhs);
+
 class PhoneBook {
 public:
   explicit PhoneBook(std::vector<Contact> contacts);
@@ -28,13 +36,6 @@ public:
   void SaveTo(std::ostream& output) const;
 
 private:
-    struct ContactByName
-    {
-        std::string name;
-        std::vector<Contact>::const_iterator it;
-    };
-
-    friend bool operator < (const ContactByName& lhs, const ContactByName& rhs);
 
 private:
     std::vector<Contact> m_contacts;
