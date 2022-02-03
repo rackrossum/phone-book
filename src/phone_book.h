@@ -19,27 +19,21 @@ struct Contact {
   std::vector<std::string> phones;
 };
 
-struct ContactByName
-{
-    std::string name;
-    std::vector<Contact>::const_iterator it;
-};
-
-bool operator < (const ContactByName& lhs, const ContactByName& rhs);
+bool operator < (const Contact& lhs, const Contact& rhs);
 
 class PhoneBook {
 public:
-  explicit PhoneBook(std::vector<Contact> contacts);
+    using Contacts = std::set<Contact>;
 
-  IteratorRange<???> FindByNamePrefix(std::string_view name_prefix) const;
+public:
+    explicit PhoneBook(std::vector<Contact> contacts);
 
-  void SaveTo(std::ostream& output) const;
+    IteratorRange<Contacts> FindByNamePrefix(std::string_view name_prefix) const;
+
+    void SaveTo(std::ostream& output) const;
 
 private:
-
-private:
-    std::vector<Contact> m_contacts;
-    std::set<ContactByName> m_sortedContacts;
+    Contacts m_contacts;
 };
 
 PhoneBook DeserializePhoneBook(std::istream& input);

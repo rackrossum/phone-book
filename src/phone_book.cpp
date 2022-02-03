@@ -1,13 +1,11 @@
 #include "phone_book.h"
 
 PhoneBook::PhoneBook(std::vector<Contact> contacts)
-    : m_contacts(std::move(contacts))
+    : m_contacts(contacts.begin(), contacts.end())
 {
-    for (auto it = m_contacts.begin(); it != m_contacts.end(); ++it)
-        m_sortedContacts.insert({it->name, it});
 }
 
-bool operator < (const ContactByName& lhs, const ContactByName& rhs)
+bool operator < (const Contact& lhs, const Contact& rhs)
 {
    return lhs.name < rhs.name; 
 }
