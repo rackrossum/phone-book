@@ -17,7 +17,7 @@ public:
   }
 
   size_t size() const {
-    return last - first;
+       return std::distance(first, last);
   }
 
 private:

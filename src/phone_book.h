@@ -20,17 +20,22 @@ struct Contact {
 };
 
 bool operator < (const Contact& lhs, const Contact& rhs);
+bool operator < (const std::string_view& lhs, const Contact& rhs);
+bool operator < (const Contact& lhs, const std::string_view& rhs);
 
 class PhoneBook {
 public:
-    using Contacts = std::set<Contact>;
+    using Contacts = std::multiset<Contact, std::less<>>;
 
 public:
     explicit PhoneBook(std::vector<Contact> contacts);
 
-    IteratorRange<Contacts> FindByNamePrefix(std::string_view name_prefix) const;
+    IteratorRange<Contacts::iterator> FindByNamePrefix(std::string_view name_prefix) const;
 
     void SaveTo(std::ostream& output) const;
+
+private:
+    Contacts::iterator FindUpperBound(std::string_view prefix) const;
 
 private:
     Contacts m_contacts;
