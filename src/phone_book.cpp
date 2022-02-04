@@ -1,4 +1,5 @@
 #include "phone_book.h"
+#include "contact.pb.h"
 
 PhoneBook::PhoneBook(std::vector<Contact> contacts)
     : m_contacts(contacts.begin(), contacts.end())
@@ -38,4 +39,34 @@ IteratorRange<PhoneBook::Contacts::iterator> PhoneBook::FindByNamePrefix(std::st
         return {m_contacts.begin(), m_contacts.end()};
 
     return {m_contacts.lower_bound(name_prefix), FindUpperBound(name_prefix)};
+}
+
+void PhoneBook::SaveTo(std::ostream& output) const
+{
+    PhoneBookSerialize::ContactList res;
+
+    for (const auto& contact : m_contacts)
+    {
+        PhoneBookSerialize::Contact s_contact;
+
+        s_contact.set_name(contact.name);
+
+        if (contact.birthday)
+        {
+            PhoneBookSerialize::Date s_bday;
+            s_bday.set_year(contact.birthday->year);
+            s_bday.set_month(contact.birthday->month);
+            s_bday.set_day(contact.birthday->day);
+
+            s_contact.set_allocated_date(&s_bday);
+        }
+
+        for (const auto& phone : contact.phones)
+            s_contact.add_phones(phone);
+
+        auto s_contacts = res.mutable_contacts();
+        s_contacts->AddAllocated(&s_contact);
+    }
+
+    res.SerializeToOstream(&output);
 }
