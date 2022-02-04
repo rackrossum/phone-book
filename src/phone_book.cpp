@@ -1,5 +1,6 @@
 #include "phone_book.h"
 #include "contact.pb.h"
+#include <algorithm>
 
 PhoneBook::PhoneBook(std::vector<Contact> contacts)
     : m_contacts(contacts.begin(), contacts.end())
@@ -23,14 +24,10 @@ bool operator < (const Contact& lhs, const std::string_view& rhs)
 
 PhoneBook::Contacts::iterator PhoneBook::FindUpperBound(std::string_view prefix) const
 {
-    Contacts::iterator res = m_contacts.lower_bound(prefix);
-    for (;res != m_contacts.end(); ++res)
-    {
-        if (std::string_view(res->name).compare(0, std::min(prefix.size(), res->name.size()), prefix) != 0)
-            break;
-    }
-
-    return res;
+    std::string s(prefix);
+    ++s.back();
+    
+    return m_contacts.lower_bound(std::string_view(s));
 }
 
 IteratorRange<PhoneBook::Contacts::iterator> PhoneBook::FindByNamePrefix(std::string_view name_prefix) const
