@@ -9,3 +9,5 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS contact.proto) # Здесь надо
 add_executable(test test.cpp phone_book.cpp ${PROTO_SRCS} ${PROTO_HDRS}) # Здесь надо перечислить все ваши .cpp-файлы, в том числе и сгенерированные protoc'ом
 target_link_libraries(test ${Protobuf_LIBRARIES}) # компонуем наш исполняемый файл с библиотекой libprotobuf 
 target_compile_features(test PUBLIC cxx_std_17 )
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
