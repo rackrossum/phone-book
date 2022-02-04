@@ -58,13 +58,13 @@ void PhoneBook::SaveTo(std::ostream& output) const
             s_bday.set_month(contact.birthday->month);
             s_bday.set_day(contact.birthday->day);
 
-            s_contact.set_allocated_date(&s_bday);
+            s_contact.set_allocated_birthday(&s_bday);
         }
 
         for (const auto& phone : contact.phones)
-            s_contact.add_phones(phone);
+            s_contact.add_phone_number(phone);
 
-        auto s_contacts = res.mutable_contacts();
+        auto s_contacts = res.mutable_contact();
         s_contacts->AddAllocated(&s_contact);
     }
 
@@ -76,26 +76,26 @@ PhoneBook DeserializePhoneBook(std::istream& input)
 
     PhoneBookSerialize::ContactList s_contacts;
     std::vector<Contact> contacts;
-    contacts.reserve(s_contacts.contacts_size());
+    contacts.reserve(s_contacts.contact_size());
 
     s_contacts.ParseFromIstream(&input);
-    for (const auto& s_contact : s_contacts.contacts())
+    for (const auto& s_contact : s_contacts.contact())
     {
         Contact contact;
 
         contact.name = s_contact.name();
 
-        if (s_contact.has_date())
+        if (s_contact.has_birthday())
         {
             Date d;
-            d.year = s_contact.date().year();
-            d.month = s_contact.date().month();
-            d.day = s_contact.date().day();
+            d.year = s_contact.birthday().year();
+            d.month = s_contact.birthday().month();
+            d.day = s_contact.birthday().day();
 
             contact.birthday = d;
         }
 
-        for (const auto& s_phone : s_contact.phones())
+        for (const auto& s_phone : s_contact.phone_number())
             contact.phones.push_back(s_phone);
 
         contacts.push_back(std::move(contact));
