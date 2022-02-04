@@ -26,11 +26,12 @@ bool operator < (const Contact& lhs, const std::string_view& rhs);
 class PhoneBook {
 public:
     using Contacts = std::multiset<Contact, std::less<>>;
+    using ContactRange = IteratorRange<Contacts::iterator>;
 
 public:
     explicit PhoneBook(std::vector<Contact> contacts);
 
-    IteratorRange<Contacts::iterator> FindByNamePrefix(std::string_view name_prefix) const;
+    ContactRange FindByNamePrefix(std::string_view name_prefix) const;
 
     void SaveTo(std::ostream& output) const;
 

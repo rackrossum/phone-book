@@ -8,6 +8,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace TestRunnerPrivate {
   template <
@@ -81,6 +82,12 @@ void AssertEqual(const T& t, const U& u, const std::string& hint = {}) {
 
 inline void Assert(bool b, const std::string& hint) {
   AssertEqual(b, true, hint);
+}
+
+template <typename T>
+void Assert(const std::optional<T> o, const std::string& hint)
+{
+    AssertEqual(o.has_value(), true, hint);
 }
 
 class TestRunner {
