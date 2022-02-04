@@ -70,3 +70,36 @@ void PhoneBook::SaveTo(std::ostream& output) const
 
     res.SerializeToOstream(&output);
 }
+
+PhoneBook DeserializePhoneBook(std::istream& input)
+{
+
+    PhoneBookSerialize::ContactList s_contacts;
+    std::vector<Contact> contacts;
+    contacts.reserve(s_contacts.contacts_size());
+
+    s_contacts.ParseFromIstream(&input);
+    for (const auto& s_contact : s_contacts.contacts())
+    {
+        Contact contact;
+
+        contact.name = s_contact.name();
+
+        if (s_contact.has_date())
+        {
+            Date d;
+            d.year = s_contact.date().year();
+            d.month = s_contact.date().month();
+            d.day = s_contact.date().day();
+
+            contact.birthday = d;
+        }
+
+        for (const auto& s_phone : s_contact.phones())
+            contact.phones.push_back(s_phone);
+
+        contacts.push_back(std::move(contact));
+    }
+
+    return PhoneBook(std::move(contacts));
+}
